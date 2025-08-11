@@ -7,19 +7,29 @@ export default function ContactSection() {
           Have questions or want to get involved? Reach out and follow us.
         </p>
       </div>
-      <div className="grid sm:grid-cols-2 gap-6">
+      <div className="grid sm:grid-cols-3 gap-6">
         <div>
           <h3 className="font-medium">Email</h3>
           <p className="text-sm text-muted-foreground">
-            <a className="underline" href="mailto:girardboosters@example.com">girardboosters@example.com</a>
+            <a className="underline" href="mailto:girardmusicboosters@gmail.com">girardmusicboosters@gmail.com</a>
           </p>
         </div>
         <div>
           <h3 className="font-medium">Social</h3>
           <ul className="text-sm text-muted-foreground space-y-1">
-            <li><a className="underline" href="#">Facebook</a></li>
-            <li><a className="underline" href="#">Instagram</a></li>
+            <li>
+              <a className="underline" href="https://www.facebook.com/GirardMusicandDramaBoosters" target="_blank" rel="noopener noreferrer">
+                Facebook — @GirardMusicandDramaBoosters
+              </a>
+            </li>
           </ul>
+        </div>
+        <div>
+          <h3 className="font-medium">Mailing Address</h3>
+          <address className="not-italic text-sm text-muted-foreground">
+            P.O. Box 425<br />
+            Girard, PA 16417
+          </address>
         </div>
       </div>
     </section>

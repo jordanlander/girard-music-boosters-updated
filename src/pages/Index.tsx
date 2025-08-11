@@ -10,6 +10,7 @@ import AnnouncementsBar from "@/components/sections/AnnouncementsBar";
 import SupportSection from "@/components/sections/SupportSection";
 import DocsSection from "@/components/sections/DocsSection";
 import ContactSection from "@/components/sections/ContactSection";
+import SocialHighlight from "@/components/sections/SocialHighlight";
 import type { CalendarType, EventItem } from "@/types/events";
 
 
@@ -111,6 +112,9 @@ const Index = () => {
               <a href="#events"><Button><CalendarIcon className="h-4 w-4 mr-2" />View Events</Button></a>
               <Button variant="secondary"><Users className="h-4 w-4 mr-2" />Get Involved</Button>
             </div>
+            <div className="mt-8">
+              <SocialHighlight facebookUrl="https://www.facebook.com/GirardMusicandDramaBoosters" />
+            </div>
           </div>
         </section>
 
@@ -204,10 +208,21 @@ const Index = () => {
                 src={photos[0]}
                 alt="Boosters adult leaders standing together outdoors"
                 loading="lazy"
-                className="w-full object-cover max-h-[420px]"
+                className="w-full object-cover object-top max-h-[420px]"
               />
             </CardContent>
           </Card>
+          <div className="mt-6 grid sm:grid-cols-2 gap-4">
+            <ul className="space-y-2">
+              <li><strong>Mike Abbey</strong> — President</li>
+              <li><strong>Matthew LaFata</strong> — Vice President</li>
+              <li><strong>Nancy Bottom</strong> — Treasurer</li>
+            </ul>
+            <ul className="space-y-2">
+              <li><strong>Cheyelle Couse</strong> — Secretary</li>
+              <li><strong>Joe Meka</strong> — Social Media</li>
+            </ul>
+          </div>
         </section>
 
         <ContactSection />
