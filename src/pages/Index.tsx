@@ -208,7 +208,7 @@ const Index = () => {
                 src={photos[0]}
                 alt="Boosters adult leaders standing together outdoors"
                 loading="lazy"
-                className="w-full object-cover object-top max-h-[420px]"
+                className="w-full h-auto"
               />
             </CardContent>
           </Card>
