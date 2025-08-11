@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
-
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 type ImageItem = { src: string; alt: string };
 
 interface Props {
@@ -14,6 +14,13 @@ interface Props {
 export default function Gallery({ images }: Props) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<ImageItem | null>(null);
+  const [api, setApi] = useState<CarouselApi | null>(null);
+
+  useEffect(() => {
+    if (!api) return;
+    const id = setInterval(() => api.scrollNext(), 3500);
+    return () => clearInterval(id);
+  }, [api]);
 
   const openImage = (img: ImageItem) => {
     setActive(img);
@@ -22,23 +29,36 @@ export default function Gallery({ images }: Props) {
 
   return (
     <div>
-      <div className="grid md:grid-cols-2 gap-4">
-        {images.map((img) => (
-          <button
-            key={img.src}
-            onClick={() => openImage(img)}
-            className="group relative"
-            aria-label={`Open image: ${img.alt}`}
-          >
-            <img
-              src={img.src}
-              alt={img.alt}
-              loading="lazy"
-              className="w-full h-full rounded-lg border border-border object-cover"
-            />
-          </button>
-        ))}
-      </div>
+      <Carousel
+        opts={{ loop: true, align: "start" }}
+        setApi={(embla) => setApi(embla)}
+        className="mx-auto max-w-4xl animate-fade-in"
+      >
+        <CarouselContent>
+          {images.map((img) => (
+            <CarouselItem key={img.src}>
+              <button
+                onClick={() => openImage(img)}
+                className="group w-full"
+                aria-label={`Open image: ${img.alt}`}
+              >
+                <div className="bg-muted rounded-lg border border-border overflow-hidden">
+                  <div className="w-full h-[260px] sm:h-[360px] md:h-[420px] flex items-center justify-center">
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      loading="lazy"
+                      className="max-h-full max-w-full object-contain"
+                    />
+                  </div>
+                </div>
+              </button>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="hidden sm:inline-flex" />
+        <CarouselNext className="hidden sm:inline-flex" />
+      </Carousel>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-[900px]">
