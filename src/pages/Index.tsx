@@ -2,22 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar as CalendarIcon, Users, Heart } from "lucide-react";
+import EventCard from "@/components/events/EventCard";
+import { CategoryChip } from "@/components/events/CategoryChip";
+import Gallery from "@/components/gallery/Gallery";
+import type { CalendarType, EventItem } from "@/types/events";
 
 const photos = [
   "/lovable-uploads/371dd2bf-833e-43e5-98be-4b62e2521b2a.png",
   "/lovable-uploads/0edb8d5e-6f68-449c-bd0e-a64425869f8f.png",
 ];
 
-type CalendarType = "Band" | "Drama" | "Fundraising" | "General";
-
-type EventItem = {
-  id: string;
-  title: string;
-  date: string; // ISO date
-  calendar: CalendarType;
-  location?: string;
-};
-
+// Types moved to src/types/events
 const initialEvents: EventItem[] = [
   { id: "1", title: "Booster Meeting", date: "2025-08-20", calendar: "General", location: "GHS Auditorium" },
   { id: "2", title: "Band Rehearsal", date: "2025-08-22", calendar: "Band", location: "Band Room" },
@@ -34,6 +29,17 @@ const Index = () => {
     const desc = "Support Girard Music & Drama Boosters—events, performances, and ways to get involved.";
     const meta = document.querySelector('meta[name="description"]');
     if (meta) meta.setAttribute("content", desc);
+    // Ensure canonical URL is set
+    const existing = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    const href = window.location.href;
+    if (existing) {
+      existing.href = href;
+    } else {
+      const link = document.createElement("link");
+      link.setAttribute("rel", "canonical");
+      link.setAttribute("href", href);
+      document.head.appendChild(link);
+    }
   }, []);
 
   const filtered = useMemo(() => {
@@ -98,18 +104,12 @@ const Index = () => {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {(["Band", "Drama", "Fundraising", "General"] as CalendarType[]).map((cal) => (
-              <button
+              <CategoryChip
                 key={cal}
+                label={cal}
+                active={selected.includes(cal)}
                 onClick={() => toggle(cal)}
-                className={`px-3 py-1 rounded-full text-sm border transition-colors ${
-                  selected.includes(cal)
-                    ? "bg-primary text-primary-foreground border-transparent"
-                    : "bg-background text-foreground border-border hover:bg-muted"
-                }`}
-                aria-pressed={selected.includes(cal)}
-              >
-                {cal}
-              </button>
+              />
             ))}
             <input
               aria-label="Search events"
@@ -145,17 +145,12 @@ const Index = () => {
             <h2 className="font-display text-2xl sm:text-3xl font-semibold">Photo Gallery</h2>
             <p className="text-muted-foreground">Highlights from our students and leaders.</p>
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
-            {photos.map((src, i) => (
-              <img
-                key={src}
-                src={src}
-                alt={i === 0 ? "Booster leaders and staff group photo" : "Girard band kids group photo"}
-                loading="lazy"
-                className="w-full h-full rounded-lg border border-border object-cover"
-              />)
-            )}
-          </div>
+          <Gallery
+            images={[
+              { src: photos[0], alt: "Booster leaders and staff group photo" },
+              { src: photos[1], alt: "Girard band kids group photo" },
+            ]}
+          />
         </section>
 
         {/* Leaders & Staff */}
