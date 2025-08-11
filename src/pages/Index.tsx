@@ -5,7 +5,13 @@ import { Calendar as CalendarIcon, Users, Heart } from "lucide-react";
 import EventCard from "@/components/events/EventCard";
 import { CategoryChip } from "@/components/events/CategoryChip";
 import Gallery from "@/components/gallery/Gallery";
+import FeatureCard from "@/components/sections/FeatureCard";
+import AnnouncementsBar from "@/components/sections/AnnouncementsBar";
+import SupportSection from "@/components/sections/SupportSection";
+import DocsSection from "@/components/sections/DocsSection";
+import ContactSection from "@/components/sections/ContactSection";
 import type { CalendarType, EventItem } from "@/types/events";
+
 
 const photos = [
   "/lovable-uploads/371dd2bf-833e-43e5-98be-4b62e2521b2a.png",
@@ -19,6 +25,13 @@ const initialEvents: EventItem[] = [
   { id: "3", title: "Drama Club Read-Through", date: "2025-08-25", calendar: "Drama", location: "Black Box" },
   { id: "4", title: "Car Wash Fundraiser", date: "2025-08-30", calendar: "Fundraising", location: "School Parking Lot" },
 ];
+
+const announcements = [
+  { id: "a1", text: "Welcome to the 2025 season: Shuffle!" },
+  { id: "a2", text: "Booster Meeting Aug 20, 7:00 PM (GHS Auditorium)" },
+  { id: "a3", text: "Car Wash Fundraiser Aug 30" },
+];
+
 
 const Index = () => {
   const [selected, setSelected] = useState<CalendarType[]>(["Band", "Drama", "Fundraising", "General"]);
@@ -63,9 +76,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border">
-        <div className="container flex items-center justify-between py-4">
-          <a href="#top" className="font-display text-xl sm:text-2xl">Girard Music & Drama Boosters</a>
+      <header className="border-b border-border sticky top-0 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-40">
+        <div className="container flex items-center justify-between py-3">
+          <a href="#top" className="flex items-center gap-3">
+            <img src="/lovable-uploads/4dd1825b-a51e-4884-9527-cb64042a826c.png" alt="Yellowjacket logo" className="h-10 w-10" />
+            <span className="font-display text-lg sm:text-xl">Girard Music & Drama Boosters</span>
+          </a>
           <nav className="hidden md:flex gap-4">
             <a href="#events" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Events</a>
             <a href="#gallery" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Gallery</a>
@@ -77,6 +93,8 @@ const Index = () => {
           </div>
         </div>
       </header>
+      
+      <AnnouncementsBar items={announcements} />
 
       <main id="top">
         {/* Hero */}
@@ -93,6 +111,27 @@ const Index = () => {
               <a href="#events"><Button><CalendarIcon className="h-4 w-4 mr-2" />View Events</Button></a>
               <Button variant="secondary"><Users className="h-4 w-4 mr-2" />Get Involved</Button>
             </div>
+          </div>
+        </section>
+
+        {/* Featured */}
+        <section id="featured" className="container py-12">
+          <div className="mb-6">
+            <h2 className="font-display text-2xl sm:text-3xl font-semibold">Featured</h2>
+            <p className="text-muted-foreground">This season’s highlights.</p>
+          </div>
+          <div className="grid gap-6">
+            <FeatureCard
+              title="2025 Show: Shuffle"
+              description="Catch the Yellowjacket Marching Band’s 2025 show — a high‑energy mix of hits."
+              image={{ src: "/lovable-uploads/247cf6cb-e08a-4553-8660-470cb8641893.png", alt: "Shuffle 2025 show artwork" }}
+              cta={{ label: "See Schedule", href: "#events" }}
+            />
+            <FeatureCard
+              title="The Sound of the Swarm"
+              description="Pride, tradition, and community support powering our students."
+              image={{ src: "/lovable-uploads/3f36a754-30e7-43d4-977b-cd32fda71c06.png", alt: "The Sound of the Swarm graphic" }}
+            />
           </div>
         </section>
 
@@ -122,22 +161,17 @@ const Index = () => {
 
           <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map((e) => (
-              <Card key={e.id} className="border-border">
-                <CardContent className="p-4">
-                  <div className="text-sm text-muted-foreground">{new Date(e.date).toLocaleDateString()}</div>
-                  <div className="mt-1 font-medium">{e.title}</div>
-                  {e.location && (
-                    <div className="text-sm text-muted-foreground">{e.location}</div>
-                  )}
-                  <div className="mt-3 text-xs text-muted-foreground">{e.calendar}</div>
-                </CardContent>
-              </Card>
+              <EventCard key={e.id} event={e} />
             ))}
             {filtered.length === 0 && (
               <div className="col-span-full text-muted-foreground">No events match your filters.</div>
             )}
           </div>
+
         </section>
+
+        <SupportSection />
+        <DocsSection />
 
         {/* Gallery */}
         <section id="gallery" className="container py-12">
@@ -147,6 +181,11 @@ const Index = () => {
           </div>
           <Gallery
             images={[
+              { src: "/lovable-uploads/247cf6cb-e08a-4553-8660-470cb8641893.png", alt: "Shuffle 2025 show artwork" },
+              { src: "/lovable-uploads/3f36a754-30e7-43d4-977b-cd32fda71c06.png", alt: "The Sound of the Swarm graphic" },
+              { src: "/lovable-uploads/020ff85b-0621-428d-a126-92df0f98e408.png", alt: "Yellowjacket Marching Band graphic with notes" },
+              { src: "/lovable-uploads/7d40c3c7-41c9-4c63-8bd1-76d79f4d591e.png", alt: "Yellowjacket logo splatter graphic" },
+              { src: "/lovable-uploads/4dd1825b-a51e-4884-9527-cb64042a826c.png", alt: "Yellowjacket circular logo" },
               { src: photos[0], alt: "Booster leaders and staff group photo" },
               { src: photos[1], alt: "Girard band kids group photo" },
             ]}
@@ -170,6 +209,8 @@ const Index = () => {
             </CardContent>
           </Card>
         </section>
+
+        <ContactSection />
       </main>
 
       <footer className="border-t border-border">
