@@ -12,6 +12,7 @@ import DocsSection from "@/components/sections/DocsSection";
 import ContactSection from "@/components/sections/ContactSection";
 import SocialHighlight from "@/components/sections/SocialHighlight";
 import type { CalendarType, EventItem } from "@/types/events";
+import { Link } from "react-router-dom";
 
 
 const photos = [
@@ -229,9 +230,14 @@ const Index = () => {
       </main>
 
       <footer className="border-t border-border">
-        <div className="container py-8 text-sm text-muted-foreground">
-          <div>© {new Date().getFullYear()} Girard Music & Drama Boosters</div>
-          <div className="mt-2">Community support that makes the arts possible.</div>
+        <div className="container py-8 text-sm text-muted-foreground flex items-center justify-between gap-2">
+          <div>
+            <div>© {new Date().getFullYear()} Girard Music & Drama Boosters</div>
+            <div className="mt-2">Community support that makes the arts possible.</div>
+          </div>
+          <Button variant="link" size="sm" asChild>
+            <Link to="/admin" aria-label="Admin login">Login</Link>
+          </Button>
         </div>
       </footer>
 
