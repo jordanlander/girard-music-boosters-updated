@@ -101,11 +101,11 @@ const Index = () => {
         {/* Hero */}
         <section className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-accent/10 to-background" aria-hidden="true" />
-          <div className="container relative py-16 sm:py-24">
-            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold max-w-3xl">
+          <div className="container relative py-16 sm:py-24 flex flex-col items-center text-center">
+            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-bold max-w-3xl mx-auto">
               Girard Music & Drama Boosters
             </h1>
-            <p className="mt-4 text-lg text-muted-foreground max-w-2xl">
+            <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
               Championing music and theatre education through community support, events, and volunteering.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
