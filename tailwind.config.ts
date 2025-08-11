@@ -63,11 +63,15 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
-			borderRadius: {
-				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
-			},
+				fontFamily: {
+					display: ['"Playfair Display"', 'serif'],
+					sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'],
+				},
+				borderRadius: {
+					lg: 'var(--radius)',
+					md: 'calc(var(--radius) - 2px)',
+					sm: 'calc(var(--radius) - 4px)'
+				},
 			keyframes: {
 				'accordion-down': {
 					from: {
