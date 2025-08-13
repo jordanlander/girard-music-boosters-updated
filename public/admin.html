@@ -179,9 +179,16 @@
       const { data: { session } } = await sb.auth.getSession();
       const email = session?.user?.email || '';
       const ok = session && ALLOWLIST.some(x => x.toLowerCase() === email.toLowerCase());
-      if (ok) { setView(true, email); await loadSettings(); await loadAnnouncements(); }
-      else if (session) { setView(false); ui.msg.textContent = 'Signed in as ' + email + ' but not authorized.'; }
-      else { setView(false); }
+      if (ok) {
+        // Already authenticated — jump straight to the React admin route
+        location.replace(`${PAGES_BASE}/admin/dashboard`);
+        return;
+      } else if (session) {
+        setView(false);
+        ui.msg.textContent = 'Signed in as ' + email + ' but not authorized.';
+      } else {
+        setView(false);
+      }
     })();
 
     ui.signout?.addEventListener('click', async () => {
