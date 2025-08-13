@@ -1,6 +1,14 @@
 import { Button } from "@/components/ui/button";
 
-export default function SupportSection() {
+interface SupportSectionProps {
+  onDonateClick: () => void;
+  onVolunteerClick: () => void;
+}
+
+export default function SupportSection({
+  onDonateClick,
+  onVolunteerClick,
+}: SupportSectionProps) {
   return (
     <section className="container py-12">
       <div className="mb-6">
