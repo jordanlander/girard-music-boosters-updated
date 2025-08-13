@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-
+import DocumentsManager from "./DocumentsManager";
 const STATIC_WHITELIST = new Set([
   "girardmusicboosters@gmail.com",
   "jordanlander@gmail.com",
@@ -123,6 +123,13 @@ create policy "Manage admin_emails" on public.admin_emails
                 </CardContent>
               </Card>
             </div>
+
+            <Card className="mt-6">
+              <CardContent className="p-6">
+                <DocumentsManager />
+              </CardContent>
+            </Card>
+
 
             {dbWhitelist && (
               <Card className="mt-6">

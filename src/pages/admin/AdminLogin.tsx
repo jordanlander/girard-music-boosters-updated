@@ -55,6 +55,9 @@ export default function AdminLogin() {
             {loading ? "Sending..." : "Send magic link"}
           </Button>
         </form>
+        <Button variant="outline" className="w-full mt-3" type="button" onClick={() => navigate("/")}>
+          Back to site
+        </Button>
         <p className="text-xs text-muted-foreground mt-4 text-center">
           Tip: Enable Email OTP in Supabase Auth settings if emails aren’t arriving.
         </p>
