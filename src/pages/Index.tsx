@@ -89,10 +89,10 @@ const Index = () => {
   }, []);
 
   const filtered = useMemo(() => {
-    return initialEvents.filter((e) =>
+    return events.filter((e) =>
       selected.includes(e.calendar) && e.title.toLowerCase().includes(query.toLowerCase())
     );
-  }, [selected, query]);
+  }, [events, selected, query]);
 
   const toggle = (cal: CalendarType) => {
     setSelected((prev) =>
@@ -222,8 +222,7 @@ const Index = () => {
               { src: "/lovable-uploads/020ff85b-0621-428d-a126-92df0f98e408.png", alt: "Yellowjacket Marching Band graphic with notes" },
               { src: "/lovable-uploads/7d40c3c7-41c9-4c63-8bd1-76d79f4d591e.png", alt: "Yellowjacket logo splatter graphic" },
               { src: "/lovable-uploads/4dd1825b-a51e-4884-9527-cb64042a826c.png", alt: "Yellowjacket circular logo" },
-              { src: photos[0], alt: "Booster leaders and staff group photo" },
-              { src: photos[1], alt: "Girard band kids group photo" },
+              ...galleryImages,
             ]}
           />
         </section>
@@ -237,7 +236,7 @@ const Index = () => {
           <Card className="overflow-hidden">
             <CardContent className="p-0">
               <img
-                src={photos[0]}
+                src={galleryImages[0]?.src ?? "/lovable-uploads/371dd2bf-833e-43e5-98be-4b62e2521b2a.png"}
                 alt="Boosters adult leaders standing together outdoors"
                 loading="lazy"
                 className="w-full h-auto"
