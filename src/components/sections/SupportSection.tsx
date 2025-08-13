@@ -11,8 +11,12 @@ export default function SupportSection() {
         </p>
       </div>
       <div className="flex flex-wrap gap-3">
-        <a href="#donate"><Button size="lg">Donate</Button></a>
-        <a href="#volunteer"><Button size="lg" variant="secondary">Volunteer</Button></a>
+        <Button asChild size="lg">
+          <a href="#donate">Donate</a>
+        </Button>
+        <Button asChild size="lg" variant="secondary">
+          <a href="#volunteer">Volunteer</a>
+        </Button>
       </div>
     </section>
   );
