@@ -116,13 +116,21 @@
   <script>
     // === Project config (yours) ===
     const SUPABASE_URL = "https://plbuldvrrgkazzyogdac.supabase.co";   // Project URL
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYnVsZHZycmdrYXp6eW9nZGFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4NzY1MjIsImV4cCI6MjA3MDQ1MjUyMn0.E5OSpOuUDg2IicnRDY5yY6rDFaexuSU2xpGn_kru6W8"; // anon key (safe to expose)
-    const ALLOWLIST = ["jordanlander@gmail.com"]; // admins
-
-    const PAGES_BASE = "https://jordanlander.github.io/girard-music-boosters-updated";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYnVsZHZycmdrYXp6eW9nZGFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4NzY1MjIsImV4cCI6MjA3MDQ1MjUyMn0.E5OSpOuUDg2IicnRDY5yY6rDFaexuSU2xpGn_kru6W8"; // anon key (safe to expose)const PAGES_BASE = "https://jordanlander.github.io/girard-music-boosters-updated";
     const REDIRECT_URL = `${PAGES_BASE}/admin.html`; // where the email link lands first
 
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Query the server allowlist (no hard-coded emails)
+    async function isAdminEmail(email){
+      if (!email) return false;
+      const { data, error } = await sb
+        .from('boosters_admins')
+        .select('email')
+        .eq('email', email)
+        .maybeSingle();
+      return !!data && !error;
+    }
 
     const ui = {
       out: document.getElementById('view-out'),
@@ -170,17 +178,10 @@
       const params = new URLSearchParams(location.search);
       const code = params.get('code');
       if (code) {
-        try { await sb.auth.exchangeCodeForSession(code); } catch(e) { console.warn(e); }
-        // Clean URL then redirect to your Vite route
-        history.replaceState({}, '', 'admin.html');
-        location.replace(`${PAGES_BASE}/admin/dashboard`);
-        return;
-      }
-      const { data: { session } } = await sb.auth.getSession();
+        try { await sb.auth.exchangeCodeForSession(code); } catch(e) { console.warn('[supabase] exchange error', e); }
+        const { data: { session } } = await sb.auth.getSession();
       const email = session?.user?.email || '';
-      const ok = session && ALLOWLIST.some(x => x.toLowerCase() === email.toLowerCase());
-      if (ok) {
-        // Already authenticated — jump straight to the React admin route
+      if (session && await isAdminEmail(email)) {
         location.replace(`${PAGES_BASE}/admin/dashboard`);
         return;
       } else if (session) {
