@@ -28,6 +28,7 @@ const announcements = [
 
 
 const Index = () => {
+  const baseUrl = import.meta.env.BASE_URL;
   const [selected, setSelected] = useState<CalendarType[]>(["Band", "Drama", "Fundraising", "General"]);
   const [query, setQuery] = useState("");
   const [galleryImages, setGalleryImages] = useState<{ src: string; alt: string }[]>([]);
@@ -144,7 +145,7 @@ const Index = () => {
       <header className="border-b border-border sticky top-0 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-40">
         <div className="container flex items-center justify-between py-3">
           <a href="#top" className="flex items-center gap-3">
-            <img src="/lovable-uploads/4dd1825b-a51e-4884-9527-cb64042a826c.png" alt="Yellowjacket logo" className="h-10 w-10" />
+            <img src={`${baseUrl}lovable-uploads/4dd1825b-a51e-4884-9527-cb64042a826c.png`} alt="Yellowjacket logo" className="h-10 w-10" />
             <span className="font-display text-lg sm:text-xl">Girard Music & Drama Boosters</span>
           </a>
           <nav className="hidden md:flex gap-4">
@@ -192,13 +193,13 @@ const Index = () => {
             <FeatureCard
               title="2025 Show: Shuffle"
               description="Catch the Yellowjacket Marching Band’s 2025 show — a high‑energy mix of hits."
-              image={{ src: "/lovable-uploads/247cf6cb-e08a-4553-8660-470cb8641893.png", alt: "Shuffle 2025 show artwork" }}
+              image={{ src: `${baseUrl}lovable-uploads/247cf6cb-e08a-4553-8660-470cb8641893.png`, alt: "Shuffle 2025 show artwork" }}
               cta={{ label: "See Schedule", href: "#events" }}
             />
             <FeatureCard
               title="The Sound of the Swarm"
               description="Pride, tradition, and community support powering our students."
-              image={{ src: "/lovable-uploads/3f36a754-30e7-43d4-977b-cd32fda71c06.png", alt: "The Sound of the Swarm graphic" }}
+              image={{ src: `${baseUrl}lovable-uploads/3f36a754-30e7-43d4-977b-cd32fda71c06.png`, alt: "The Sound of the Swarm graphic" }}
             />
           </div>
         </section>
