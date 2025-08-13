@@ -14,6 +14,11 @@ import SocialHighlight from "@/components/sections/SocialHighlight";
 import type { CalendarType, EventItem } from "@/types/events";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 const announcements = [
   { id: "a1", text: "Welcome to the 2025 season: Shuffle!" },
@@ -27,6 +32,12 @@ const Index = () => {
   const [query, setQuery] = useState("");
   const [galleryImages, setGalleryImages] = useState<{ src: string; alt: string }[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
+  const [joinOpen, setJoinOpen] = useState(false);
+  const [donateOpen, setDonateOpen] = useState(false);
+  const [joinName, setJoinName] = useState("");
+  const [joinEmail, setJoinEmail] = useState("");
+  const [joinNotes, setJoinNotes] = useState("");
+  const [joinLoading, setJoinLoading] = useState(false);
 
   useEffect(() => {
     document.title = "Girard Music & Drama Boosters | Support the Arts";
@@ -100,6 +111,27 @@ const Index = () => {
     );
   };
 
+  const handleJoinSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!joinName || !joinEmail) {
+      toast.error("Please enter your name and email.");
+      return;
+    }
+    setJoinLoading(true);
+    const { data, error } = await (supabase as any).functions.invoke("join-request", {
+      body: { name: joinName, email: joinEmail, message: joinNotes },
+    });
+    setJoinLoading(false);
+    if (error) {
+      toast.error("Could not send message", { description: error.message });
+    } else {
+      toast.success("Thanks! We'll be in touch soon.");
+      setJoinOpen(false);
+      setJoinName("");
+      setJoinEmail("");
+      setJoinNotes("");
+    }
+  };
   const orgJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -121,8 +153,8 @@ const Index = () => {
             <a href="#leaders" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Leaders</a>
           </nav>
           <div className="flex gap-2">
-            <Button variant="secondary" className="hidden sm:inline-flex"><Users className="h-4 w-4 mr-2" />Join</Button>
-            <Button><Heart className="h-4 w-4 mr-2" />Donate</Button>
+            <Button variant="secondary" className="hidden sm:inline-flex" onClick={() => setJoinOpen(true)}><Users className="h-4 w-4 mr-2" />Join</Button>
+            <Button onClick={() => setDonateOpen(true)}><Heart className="h-4 w-4 mr-2" />Donate</Button>
           </div>
         </div>
       </header>
@@ -142,7 +174,7 @@ const Index = () => {
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a href="#events"><Button><CalendarIcon className="h-4 w-4 mr-2" />View Events</Button></a>
-              <Button variant="secondary"><Users className="h-4 w-4 mr-2" />Get Involved</Button>
+              <Button variant="secondary" onClick={() => setJoinOpen(true)}><Users className="h-4 w-4 mr-2" />Get Involved</Button>
             </div>
             <div className="mt-8">
               <SocialHighlight facebookUrl="https://www.facebook.com/GirardMusicandDramaBoosters" />
@@ -226,31 +258,75 @@ const Index = () => {
             <h2 className="font-display text-2xl sm:text-3xl font-semibold">Leaders & Staff</h2>
             <p className="text-muted-foreground max-w-2xl">Our adult leaders and staff support students across band and drama programs, coordinating events, fundraising, and logistics.</p>
           </div>
-          <Card className="overflow-hidden">
-            <CardContent className="p-0">
-              <img
-                src={galleryImages[0]?.src ?? "/lovable-uploads/371dd2bf-833e-43e5-98be-4b62e2521b2a.png"}
-                alt="Boosters adult leaders standing together outdoors"
-                loading="lazy"
-                className="w-full h-auto"
-              />
-            </CardContent>
-          </Card>
-          <div className="mt-6 grid sm:grid-cols-2 gap-4">
-            <ul className="space-y-2">
-              <li><strong>Mike Abbey</strong> — President</li>
-              <li><strong>Matthew LaFata</strong> — Vice President</li>
-              <li><strong>Nancy Bottom</strong> — Treasurer</li>
-            </ul>
-            <ul className="space-y-2">
-              <li><strong>Cheyelle Couse</strong> — Secretary</li>
-              <li><strong>Joe Meka</strong> — Social Media</li>
-            </ul>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { name: "Mike Abbey", role: "President" },
+              { name: "Matthew LaFata", role: "Vice President" },
+              { name: "Nancy Bottom", role: "Treasurer" },
+              { name: "Cheyelle Couse", role: "Secretary" },
+              { name: "Joe Meka", role: "Social Media" },
+            ].map((p) => (
+              <Card key={p.name} className="p-5 animate-fade-in hover-scale">
+                <div className="text-xs uppercase tracking-wide text-muted-foreground">{p.role}</div>
+                <div className="text-lg font-semibold mt-1">{p.name}</div>
+              </Card>
+            ))}
           </div>
         </section>
 
         <ContactSection />
       </main>
+
+      {/* Join Dialog */}
+      <Dialog open={joinOpen} onOpenChange={setJoinOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Join the Boosters</DialogTitle>
+            <DialogDescription>Tell us how to reach you and we’ll get in touch.</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleJoinSubmit} className="space-y-3">
+            <div className="grid gap-2">
+              <Label htmlFor="join-name">Name</Label>
+              <Input id="join-name" value={joinName} onChange={(e) => setJoinName(e.target.value)} required />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="join-email">Email</Label>
+              <Input id="join-email" type="email" value={joinEmail} onChange={(e) => setJoinEmail(e.target.value)} required />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="join-notes">Notes (optional)</Label>
+              <Textarea id="join-notes" value={joinNotes} onChange={(e) => setJoinNotes(e.target.value)} rows={4} />
+            </div>
+            <DialogFooter className="gap-2">
+              <Button type="button" variant="outline" onClick={() => setJoinOpen(false)}>Cancel</Button>
+              <Button type="submit" disabled={joinLoading}>{joinLoading ? "Sending…" : "Send"}</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Donate Dialog */}
+      <Dialog open={donateOpen} onOpenChange={setDonateOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Donate by Check</DialogTitle>
+            <DialogDescription>Until online donations are enabled, please mail a check.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2 text-sm">
+            <p>Make checks payable to: <strong>Girard Music Boosters</strong></p>
+            <p>Mailing Address:</p>
+            <address className="not-italic text-muted-foreground">
+              P.O. Box 425<br />
+              Girard, PA 16417
+            </address>
+            <p className="text-muted-foreground">Questions? Email <a className="underline" href="mailto:girardmusicboosters@gmail.com">girardmusicboosters@gmail.com</a></p>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setDonateOpen(false)}>Done</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
 
       <footer className="border-t border-border">
         <div className="container py-8 text-sm text-muted-foreground flex items-center justify-between gap-2">
