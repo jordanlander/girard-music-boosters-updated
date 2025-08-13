@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Boosters Admin · Sign In</title>
+  <title>Boosters Admin · Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
@@ -11,17 +11,24 @@
     :root{ --red:#B22222; --gold:#F9C80E; --bg:#f8f8f8; --text:#222; --muted:#6b7280 }
     *{ box-sizing:border-box }
     body{ margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--text) }
-    .wrap{ max-width:760px; margin:0 auto; padding:2rem 1rem }
+    .wrap{ max-width:960px; margin:0 auto; padding:2rem 1rem }
     .card{ background:#fff; border:1px solid rgba(0,0,0,.08); border-radius:14px; box-shadow:0 4px 14px rgba(0,0,0,.08); padding:1.25rem }
-    h1{ margin:.2rem 0 }
+    h1,h2{ margin:.2rem 0 }
     .muted{ color:var(--muted) }
-    label{ font-weight:600; display:block; margin:.75rem 0 .25rem }
-    input[type=email]{ width:100%; padding:.9rem; border:1px solid #ddd; border-radius:10px; font-size:1rem }
-    button{ background:var(--red); color:#fff; border:0; border-radius:10px; padding:.85rem 1rem; font-weight:800; cursor:pointer }
+    label{ font-weight:600; display:block; margin:.6rem 0 .3rem }
+    input, textarea{ width:100%; padding:.7rem .8rem; border:1px solid #ddd; border-radius:10px; font-size:1rem }
+    textarea{ min-height:120px }
+    button{ background:var(--red); color:#fff; border:0; border-radius:10px; padding:.7rem 1rem; font-weight:800; cursor:pointer }
     button[disabled]{ opacity:.6; cursor:not-allowed }
     nav a{ color:var(--red); text-decoration:none; font-weight:800 }
+    .row{ display:grid; grid-template-columns:1fr 1fr; gap:1rem }
+    @media (max-width:760px){ .row{ grid-template-columns:1fr } }
     .pill{ background:var(--gold); color:#111; font-weight:800; border-radius:999px; padding:.25rem .6rem; display:inline-block }
-    pre{ background:#0b1020; color:#c8d1ff; padding:12px; border-radius:10px; overflow:auto; font-size:.85rem }
+    .toolbar{ display:flex; gap:.5rem; flex-wrap:wrap }
+    .ghost{ background:#333 }
+    .list{ display:grid; gap:.6rem }
+    .item{ display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; border:1px solid #eee; border-radius:10px; padding:.6rem .8rem }
+    .item h3{ margin:.1rem 0 }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -32,6 +39,7 @@
       <a href="./index.html">← Back to site</a>
     </nav>
 
+    <!-- Signed-out -->
     <div id="view-out" class="card">
       <h1>Sign in</h1>
       <p class="muted">Enter an allowlisted email. We’ll email you a one‑time magic link.</p>
@@ -41,37 +49,78 @@
         <button id="send">Send Magic Link</button>
         <span id="msg" class="muted"></span>
       </div>
-      <details style="margin-top:1rem"><summary>Help</summary>
-        <p class="muted">If the link errors, your Supabase redirect URLs likely don’t include this page. See: Authentication → URL Configuration → Add this exact URL.</p>
-      </details>
     </div>
 
-    <div id="view-in" class="card" style="display:none; margin-top:1rem">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+    <!-- Signed-in dashboard -->
+    <div id="view-in" style="display:none">
+      <div class="card" style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap">
         <div>
           <div class="pill">Authorized</div>
           <h1 style="margin:.4rem 0 0">Dashboard</h1>
           <div id="who" class="muted"></div>
         </div>
-        <div><button id="signout" style="background:#333">Sign out</button></div>
+        <div class="toolbar">
+          <button id="signout" class="ghost">Sign out</button>
+        </div>
       </div>
-      <hr style="border:0;border-top:1px solid #eee;margin:1rem 0" />
-      <p class="muted">Coming soon: announcements, sponsors, media uploads (enforced by RLS).</p>
-      <details><summary>Debug</summary><pre id="debug"></pre></details>
+
+      <section style="margin-top:1rem" class="card">
+        <h2>Site Settings</h2>
+        <p class="muted">These update the public site instantly after deploy: calendar + tickets banner.</p>
+        <div class="row">
+          <div>
+            <label>Google Calendar Embed URL</label>
+            <input id="set-calendar" placeholder="https://calendar.google.com/calendar/embed?..." />
+            <label style="margin-top:.8rem"><input id="set-tickets-enabled" type="checkbox" /> Show Tickets banner</label>
+            <label>Tickets Label (e.g., Fall Musical)</label>
+            <input id="set-tickets-show" placeholder="Fall Musical: Beauty & the Beast" />
+          </div>
+          <div>
+            <label>Tickets Link URL</label>
+            <input id="set-tickets-url" placeholder="https://ticketing.example.com/show" />
+            <label>Start (ISO, optional)</label>
+            <input id="set-tickets-start" placeholder="2025-11-01T00:00:00-04:00" />
+            <label>End (ISO, optional)</label>
+            <input id="set-tickets-end" placeholder="2025-11-30T23:59:59-04:00" />
+          </div>
+        </div>
+        <div style="margin-top:.8rem;display:flex;gap:.5rem;align-items:center">
+          <button id="save-settings">Save Settings</button>
+          <span id="save-msg" class="muted"></span>
+        </div>
+      </section>
+
+      <section style="margin-top:1rem" class="card">
+        <h2>Announcements</h2>
+        <div class="row">
+          <div>
+            <label>Title</label>
+            <input id="ann-title" />
+            <label>Body</label>
+            <textarea id="ann-body"></textarea>
+            <label style="margin-top:.4rem"><input id="ann-published" type="checkbox" /> Published</label>
+            <div style="margin-top:.6rem;display:flex;gap:.5rem;align-items:center">
+              <button id="ann-add">Add Announcement</button>
+              <span id="ann-msg" class="muted"></span>
+            </div>
+          </div>
+          <div>
+            <div class="muted" style="margin-bottom:.4rem">Latest</div>
+            <div id="ann-list" class="list"></div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 
   <script>
-    // === Fill these in ===
-    const SUPABASE_URL = "https://plbuldvrrgkazzyogdac.supabase.co";   // Settings → API → Project URL
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYnVsZHZycmdrYXp6eW9nZGFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4NzY1MjIsImV4cCI6MjA3MDQ1MjUyMn0.E5OSpOuUDg2IicnRDY5yY6rDFaexuSU2xpGn_kru6W8";                 // Settings → API → anon public key
-    const ALLOWLIST = [
-      "jordanlander@gmail.com",
-      // "second@domain.org",
-    ];
+    // === Project config (yours) ===
+    const SUPABASE_URL = "https://plbuldvrrgkazzyogdac.supabase.co";   // Project URL
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYnVsZHZycmdrYXp6eW9nZGFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4NzY1MjIsImV4cCI6MjA3MDQ1MjUyMn0.E5OSpOuUDg2IicnRDY5yY6rDFaexuSU2xpGn_kru6W8"; // anon key (safe to expose)
+    const ALLOWLIST = ["jordanlander@gmail.com"]; // admins
 
-    // IMPORTANT: force magic links to return to GitHub Pages (not preview domains)
-    const REDIRECT_URL = "https://jordanlander.github.io/girard-music-boosters-updated/admin.html";
+    const PAGES_BASE = "https://jordanlander.github.io/girard-music-boosters-updated";
+    const REDIRECT_URL = `${PAGES_BASE}/admin.html`; // where the email link lands first
 
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -82,8 +131,23 @@
       send: document.getElementById('send'),
       msg: document.getElementById('msg'),
       who: document.getElementById('who'),
-      debug: document.getElementById('debug'),
       signout: document.getElementById('signout'),
+      // settings
+      cal: document.getElementById('set-calendar'),
+      tEnabled: document.getElementById('set-tickets-enabled'),
+      tShow: document.getElementById('set-tickets-show'),
+      tUrl: document.getElementById('set-tickets-url'),
+      tStart: document.getElementById('set-tickets-start'),
+      tEnd: document.getElementById('set-tickets-end'),
+      saveSettings: document.getElementById('save-settings'),
+      saveMsg: document.getElementById('save-msg'),
+      // announcements
+      annTitle: document.getElementById('ann-title'),
+      annBody: document.getElementById('ann-body'),
+      annPub: document.getElementById('ann-published'),
+      annAdd: document.getElementById('ann-add'),
+      annMsg: document.getElementById('ann-msg'),
+      annList: document.getElementById('ann-list'),
     };
 
     function setView(signedIn, email){
@@ -92,7 +156,7 @@
       if (signedIn) ui.who.textContent = email || '';
     }
 
-    ui.send.addEventListener('click', async () => {
+    ui.send?.addEventListener('click', async () => {
       const email = ui.email.value.trim();
       if (!email) { ui.msg.textContent = 'Enter your email'; return; }
       ui.msg.textContent = 'Sending…'; ui.send.disabled = true;
@@ -102,33 +166,110 @@
     });
 
     (async () => {
-      // After redirect back from email link, exchange ?code= for a session
+      // If the magic-link returned us here, finish the session then bounce to React admin
       const params = new URLSearchParams(location.search);
       const code = params.get('code');
       if (code) {
         try { await sb.auth.exchangeCodeForSession(code); } catch(e) { console.warn(e); }
+        // Clean URL then redirect to your Vite route
         history.replaceState({}, '', 'admin.html');
+        location.replace(`${PAGES_BASE}/admin/dashboard`);
+        return;
       }
       const { data: { session } } = await sb.auth.getSession();
       const email = session?.user?.email || '';
       const ok = session && ALLOWLIST.some(x => x.toLowerCase() === email.toLowerCase());
-      if (ok) { setView(true, email); ui.debug.textContent = JSON.stringify(session, null, 2); }
+      if (ok) { setView(true, email); await loadSettings(); await loadAnnouncements(); }
       else if (session) { setView(false); ui.msg.textContent = 'Signed in as ' + email + ' but not authorized.'; }
       else { setView(false); }
     })();
 
-    ui.signout.addEventListener('click', async () => {
+    ui.signout?.addEventListener('click', async () => {
       await sb.auth.signOut();
       setView(false);
       ui.msg.textContent = 'Signed out.';
     });
-  </script>
-  <!-- in public/admin.html, after exchangeCodeForSession(...) succeeds -->
-<script>
-  // after: await sb.auth.exchangeCodeForSession(code)
-  const BASE = "https://jordanlander.github.io/girard-music-boosters-updated";
-  location.replace(`${BASE}/admin/dashboard`); // auto-jump to the React admin
-</script>
 
+    // ===== Settings CRUD =====
+    async function loadSettings(){
+      const { data } = await sb.from('site_settings').select('*').eq('id',1).maybeSingle();
+      if (!data) return;
+      ui.cal.value = data.calendar_url || '';
+      ui.tEnabled.checked = !!data.tickets_enabled;
+      ui.tShow.value = data.tickets_show || '';
+      ui.tUrl.value = data.tickets_url || '';
+      ui.tStart.value = data.tickets_start || '';
+      ui.tEnd.value = data.tickets_end || '';
+    }
+
+    ui.saveSettings?.addEventListener('click', async () => {
+      ui.saveMsg.textContent = 'Saving…';
+      const row = {
+        id: 1,
+        calendar_url: ui.cal.value.trim() || null,
+        tickets_enabled: ui.tEnabled.checked,
+        tickets_show: ui.tShow.value.trim() || null,
+        tickets_url: ui.tUrl.value.trim() || null,
+        tickets_start: ui.tStart.value.trim() || null,
+        tickets_end: ui.tEnd.value.trim() || null,
+        updated_at: new Date().toISOString()
+      };
+      const { error } = await sb.from('site_settings').upsert(row).eq('id',1);
+      ui.saveMsg.textContent = error ? ('Error: ' + error.message) : 'Saved.';
+    });
+
+    // ===== Announcements CRUD =====
+    async function loadAnnouncements(){
+      const { data } = await sb.from('announcements').select('id,title,body,published,created_at').order('created_at',{ascending:false}).limit(20);
+      const items = data || [];
+      ui.annList.innerHTML = items.map(a => (
+        '<div class="item" data-id="'+a.id+'">'+
+          '<div style="flex:1 1 auto">'+
+            '<h3>'+escapeHtml(a.title)+'</h3>'+ 
+            '<div class="muted" style="font-size:.9rem">'+new Date(a.created_at).toLocaleString()+'</div>'+ 
+            '<div>'+escapeHtml(a.body||'')+'</div>'+ 
+          '</div>'+ 
+          '<div class="toolbar">'+
+            '<button data-act="toggle">'+(a.published?'Unpublish':'Publish')+'</button>'+ 
+            '<button class="ghost" data-act="delete">Delete</button>'+ 
+          '</div>'+ 
+        '</div>'
+      )).join('');
+    }
+
+    ui.annAdd?.addEventListener('click', async () => {
+      const title = ui.annTitle.value.trim();
+      const body = ui.annBody.value.trim();
+      const published = ui.annPub.checked;
+      if (!title) { ui.annMsg.textContent = 'Title required'; return; }
+      ui.annMsg.textContent = 'Saving…';
+      const { error } = await sb.from('announcements').insert({ title, body, published });
+      ui.annMsg.textContent = error ? ('Error: ' + error.message) : 'Saved';
+      if (!error) { ui.annTitle.value=''; ui.annBody.value=''; ui.annPub.checked=false; loadAnnouncements(); }
+    });
+
+    ui.annList?.addEventListener('click', async (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const item = btn.closest('.item');
+      const id = Number(item?.dataset?.id);
+      if (!id) return;
+      if (btn.dataset.act === 'delete') {
+        if (!confirm('Delete this announcement?')) return;
+        await sb.from('announcements').delete().eq('id', id);
+        loadAnnouncements();
+      } else if (btn.dataset.act === 'toggle') {
+        const { data } = await sb.from('announcements').select('published').eq('id', id).maybeSingle();
+        const next = !(data?.published);
+        await sb.from('announcements').update({ published: next }).eq('id', id);
+        loadAnnouncements();
+      }
+    });
+
+    function escapeHtml(s){
+      s = s || "";
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+  </script>
 </body>
 </html>
