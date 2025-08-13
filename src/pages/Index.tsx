@@ -164,7 +164,7 @@ const Index = () => {
             <a href="#leaders" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Leaders</a>
           </nav>
           <div className="flex gap-2">
-            <Button variant="secondary" className="hidden sm:inline-flex" onClick={() => setJoinOpen(true)}><Users className="h-4 w-4 mr-2" />Join</Button>
+            <Button variant="secondary" onClick={() => setJoinOpen(true)}><Users className="h-4 w-4 mr-2" />Join</Button>
             <Button onClick={() => setDonateOpen(true)}><Heart className="h-4 w-4 mr-2" />Donate</Button>
           </div>
         </div>
@@ -248,8 +248,10 @@ const Index = () => {
           </div>
 
         </section>
-
-        <SupportSection />
+        <SupportSection
+          onDonateClick={() => setDonateOpen(true)}
+          onVolunteerClick={() => setJoinOpen(true)}
+        />
         <DocsSection />
 
         {/* Gallery */}

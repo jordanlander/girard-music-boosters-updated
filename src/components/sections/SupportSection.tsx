@@ -1,6 +1,14 @@
 import { Button } from "@/components/ui/button";
 
-export default function SupportSection() {
+interface SupportSectionProps {
+  onDonateClick: () => void;
+  onVolunteerClick: () => void;
+}
+
+export default function SupportSection({
+  onDonateClick,
+  onVolunteerClick,
+}: SupportSectionProps) {
   return (
     <section className="container py-12">
       <div className="mb-6">
@@ -11,8 +19,12 @@ export default function SupportSection() {
         </p>
       </div>
       <div className="flex flex-wrap gap-3">
-        <a href="#donate"><Button size="lg">Donate</Button></a>
-        <a href="#volunteer"><Button size="lg" variant="secondary">Volunteer</Button></a>
+        <Button size="lg" onClick={onDonateClick}>
+          Donate
+        </Button>
+        <Button size="lg" variant="secondary" onClick={onVolunteerClick}>
+          Volunteer
+        </Button>
       </div>
     </section>
   );
