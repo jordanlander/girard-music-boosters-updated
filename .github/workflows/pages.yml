@@ -20,10 +20,15 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20   # safer with vite/react stacks
           cache: npm
-      - run: npm ci
-      - run: npm run build
+      - run: npm ci || npm i --no-audit --no-fund
+      - run: |
+          if npm run | grep -q " build"; then
+            npm run build
+          else
+            npx vite build
+          fi
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
