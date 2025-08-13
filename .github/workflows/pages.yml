@@ -1,4 +1,4 @@
-name: Build & Deploy Vite site to GitHub Pages
+﻿name: Build & Deploy Vite site to GitHub Pages
 on:
   push:
     branches: [ main ]
@@ -23,7 +23,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci || npm i --no-audit --no-fund
-      # Ensure the plugin is present even if not in the lockfile
+      # Ensure plugin present even if not in lockfile
       - run: npm i -D @vitejs/plugin-react
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
