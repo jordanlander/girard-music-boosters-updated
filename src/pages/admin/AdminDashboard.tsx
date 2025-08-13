@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import DocumentsManager from "./DocumentsManager";
+import EventsManager from "./EventsManager";
+import PhotosManager from "./PhotosManager";
 const STATIC_WHITELIST = new Set([
   "girardmusicboosters@gmail.com",
   "jordanlander@gmail.com",
@@ -110,16 +112,18 @@ create policy "Manage admin_emails" on public.admin_emails
             <div className="grid gap-4 sm:grid-cols-2">
               <Card>
                 <CardContent className="p-6">
-                  <h2 className="font-semibold">Events</h2>
-                  <p className="text-sm text-muted-foreground">Add and manage real events. (Coming next step)</p>
-                  <div className="mt-3"><Button disabled>Open Events Admin</Button></div>
+                <h2 className="font-semibold">Events</h2>
+                <div className="mt-3">
+                  <EventsManager />
+                </div>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-6">
                   <h2 className="font-semibold">Photos</h2>
-                  <p className="text-sm text-muted-foreground">Upload photos to the gallery. (Coming next step)</p>
-                  <div className="mt-3"><Button disabled>Open Photos Admin</Button></div>
+                  <div className="mt-3">
+                    <PhotosManager />
+                  </div>
                 </CardContent>
               </Card>
             </div>

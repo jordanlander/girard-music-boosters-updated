@@ -62,6 +62,72 @@ export type Database = {
         }
         Relationships: []
       }
+      events: {
+        Row: {
+          calendar: string
+          created_at: string
+          date: string
+          description: string | null
+          id: string
+          location: string | null
+          published: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          calendar: string
+          created_at?: string
+          date: string
+          description?: string | null
+          id?: string
+          location?: string | null
+          published?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          calendar?: string
+          created_at?: string
+          date?: string
+          description?: string | null
+          id?: string
+          location?: string | null
+          published?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      photos: {
+        Row: {
+          alt: string | null
+          created_at: string
+          id: string
+          order_index: number
+          path: string
+          published: boolean
+          updated_at: string
+        }
+        Insert: {
+          alt?: string | null
+          created_at?: string
+          id?: string
+          order_index?: number
+          path: string
+          published?: boolean
+          updated_at?: string
+        }
+        Update: {
+          alt?: string | null
+          created_at?: string
+          id?: string
+          order_index?: number
+          path?: string
+          published?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

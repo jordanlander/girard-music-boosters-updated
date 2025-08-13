@@ -13,20 +13,7 @@ import ContactSection from "@/components/sections/ContactSection";
 import SocialHighlight from "@/components/sections/SocialHighlight";
 import type { CalendarType, EventItem } from "@/types/events";
 import { Link } from "react-router-dom";
-
-
-const photos = [
-  "/lovable-uploads/371dd2bf-833e-43e5-98be-4b62e2521b2a.png",
-  "/lovable-uploads/0edb8d5e-6f68-449c-bd0e-a64425869f8f.png",
-];
-
-// Types moved to src/types/events
-const initialEvents: EventItem[] = [
-  { id: "1", title: "Booster Meeting", date: "2025-08-20", calendar: "General", location: "GHS Auditorium" },
-  { id: "2", title: "Band Rehearsal", date: "2025-08-22", calendar: "Band", location: "Band Room" },
-  { id: "3", title: "Drama Club Read-Through", date: "2025-08-25", calendar: "Drama", location: "Black Box" },
-  { id: "4", title: "Car Wash Fundraiser", date: "2025-08-30", calendar: "Fundraising", location: "School Parking Lot" },
-];
+import { supabase } from "@/integrations/supabase/client";
 
 const announcements = [
   { id: "a1", text: "Welcome to the 2025 season: Shuffle!" },
@@ -38,6 +25,8 @@ const announcements = [
 const Index = () => {
   const [selected, setSelected] = useState<CalendarType[]>(["Band", "Drama", "Fundraising", "General"]);
   const [query, setQuery] = useState("");
+  const [galleryImages, setGalleryImages] = useState<{ src: string; alt: string }[]>([]);
+  const [events, setEvents] = useState<EventItem[]>([]);
 
   useEffect(() => {
     document.title = "Girard Music & Drama Boosters | Support the Arts";
@@ -55,6 +44,48 @@ const Index = () => {
       link.setAttribute("href", href);
       document.head.appendChild(link);
     }
+  }, []);
+
+  // Load events from Supabase (published only)
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await (supabase as any)
+        .from("events")
+        .select("id,title,date,calendar,location,description")
+        .eq("published", true)
+        .order("date", { ascending: true });
+      if (!error && data) {
+        setEvents(
+          (data as any[]).map((d) => ({
+            id: d.id,
+            title: d.title,
+            date: d.date,
+            calendar: d.calendar as CalendarType,
+            location: d.location ?? undefined,
+            description: d.description ?? undefined,
+          }))
+        );
+      }
+    })();
+  }, []);
+
+  // Load gallery photos from Supabase storage via photos table
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await (supabase as any)
+        .from("photos")
+        .select("path,alt,order_index,published,created_at")
+        .eq("published", true)
+        .order("order_index", { ascending: true })
+        .order("created_at", { ascending: true });
+      if (!error && data) {
+        const mapped = (data as any[]).map((p) => {
+          const { data: pub } = (supabase as any).storage.from("gallery").getPublicUrl(p.path);
+          return { src: pub.publicUrl as string, alt: p.alt || "Gallery image" };
+        });
+        setGalleryImages(mapped);
+      }
+    })();
   }, []);
 
   const filtered = useMemo(() => {
