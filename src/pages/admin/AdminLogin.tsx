@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -11,15 +11,15 @@ export default function AdminLogin() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
-        navigate("/admin/dashboard", { replace: true });
-      }
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) navigate("/admin/dashboard", { replace: true });
     });
-    return () => sub.subscription.unsubscribe();
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) navigate("/admin/dashboard", { replace: true });
+    });
+
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   const sendMagicLink = async (e: React.FormEvent) => {
