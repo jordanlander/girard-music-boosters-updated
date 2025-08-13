@@ -123,5 +123,12 @@
       ui.msg.textContent = 'Signed out.';
     });
   </script>
+  <!-- in public/admin.html, after exchangeCodeForSession(...) succeeds -->
+<script>
+  // after: await sb.auth.exchangeCodeForSession(code)
+  const BASE = "https://jordanlander.github.io/girard-music-boosters-updated";
+  location.replace(`${BASE}/admin/dashboard`); // auto-jump to the React admin
+</script>
+
 </body>
 </html>
