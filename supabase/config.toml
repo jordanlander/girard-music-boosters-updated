@@ -1,1 +1,4 @@
 project_id = "plbuldvrrgkazzyogdac"
+
+[functions.join-request]
+verify_jwt = false
