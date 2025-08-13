@@ -19,11 +19,11 @@ export default function SupportSection({
         </p>
       </div>
       <div className="flex flex-wrap gap-3">
-        <Button size="lg" onClick={onDonateClick}>
-          Donate
+        <Button asChild size="lg">
+          <a href="#donate">Donate</a>
         </Button>
-        <Button size="lg" variant="secondary" onClick={onVolunteerClick}>
-          Volunteer
+        <Button asChild size="lg" variant="secondary">
+          <a href="#volunteer">Volunteer</a>
         </Button>
       </div>
     </section>
