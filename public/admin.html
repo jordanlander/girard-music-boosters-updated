@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Boosters Admin · Sign In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <style>
+    :root{ --red:#B22222; --gold:#F9C80E; --bg:#f8f8f8; --text:#222; --muted:#6b7280 }
+    *{ box-sizing:border-box }
+    body{ margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--text) }
+    .wrap{ max-width:760px; margin:0 auto; padding:2rem 1rem }
+    .card{ background:#fff; border:1px solid rgba(0,0,0,.08); border-radius:14px; box-shadow:0 4px 14px rgba(0,0,0,.08); padding:1.25rem }
+    h1{ margin:.2rem 0 }
+    .muted{ color:var(--muted) }
+    label{ font-weight:600; display:block; margin:.75rem 0 .25rem }
+    input[type=email]{ width:100%; padding:.9rem; border:1px solid #ddd; border-radius:10px; font-size:1rem }
+    button{ background:var(--red); color:#fff; border:0; border-radius:10px; padding:.85rem 1rem; font-weight:800; cursor:pointer }
+    button[disabled]{ opacity:.6; cursor:not-allowed }
+    nav a{ color:var(--red); text-decoration:none; font-weight:800 }
+    .pill{ background:var(--gold); color:#111; font-weight:800; border-radius:999px; padding:.25rem .6rem; display:inline-block }
+    pre{ background:#0b1020; color:#c8d1ff; padding:12px; border-radius:10px; overflow:auto; font-size:.85rem }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="wrap">
+    <nav style="display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1rem">
+      <strong>Girard Music & Drama Boosters — Admin</strong>
+      <a href="./index.html">← Back to site</a>
+    </nav>
+
+    <div id="view-out" class="card">
+      <h1>Sign in</h1>
+      <p class="muted">Enter an allowlisted email. We’ll email you a one‑time magic link.</p>
+      <label for="email">Email</label>
+      <input id="email" type="email" placeholder="you@yourdistrict.org" autocomplete="email" />
+      <div style="display:flex;gap:.75rem;align-items:center;margin-top:.85rem">
+        <button id="send">Send Magic Link</button>
+        <span id="msg" class="muted"></span>
+      </div>
+      <details style="margin-top:1rem"><summary>Help</summary>
+        <p class="muted">If the link errors, your Supabase redirect URLs likely don’t include this page. See: Authentication → URL Configuration → Add this exact URL.</p>
+      </details>
+    </div>
+
+    <div id="view-in" class="card" style="display:none; margin-top:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+        <div>
+          <div class="pill">Authorized</div>
+          <h1 style="margin:.4rem 0 0">Dashboard</h1>
+          <div id="who" class="muted"></div>
+        </div>
+        <div><button id="signout" style="background:#333">Sign out</button></div>
+      </div>
+      <hr style="border:0;border-top:1px solid #eee;margin:1rem 0" />
+      <p class="muted">Coming soon: announcements, sponsors, media uploads (enforced by RLS).</p>
+      <details><summary>Debug</summary><pre id="debug"></pre></details>
+    </div>
+  </div>
+
+  <script>
+    // === Fill these in ===
+    const SUPABASE_URL = "https://plbuldvrrgkazzyogdac.supabase.co";   // Settings → API → Project URL
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYnVsZHZycmdrYXp6eW9nZGFjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4NzY1MjIsImV4cCI6MjA3MDQ1MjUyMn0.E5OSpOuUDg2IicnRDY5yY6rDFaexuSU2xpGn_kru6W8";                 // Settings → API → anon public key
+    const ALLOWLIST = [
+      "jordanlander@gmail.com",
+      // "second@domain.org",
+    ];
+
+    // IMPORTANT: force magic links to return to GitHub Pages (not preview domains)
+    const REDIRECT_URL = "https://jordanlander.github.io/girard-music-boosters-updated/admin.html";
+
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const ui = {
+      out: document.getElementById('view-out'),
+      in: document.getElementById('view-in'),
+      email: document.getElementById('email'),
+      send: document.getElementById('send'),
+      msg: document.getElementById('msg'),
+      who: document.getElementById('who'),
+      debug: document.getElementById('debug'),
+      signout: document.getElementById('signout'),
+    };
+
+    function setView(signedIn, email){
+      ui.out.style.display = signedIn ? 'none' : 'block';
+      ui.in.style.display = signedIn ? 'block' : 'none';
+      if (signedIn) ui.who.textContent = email || '';
+    }
+
+    ui.send.addEventListener('click', async () => {
+      const email = ui.email.value.trim();
+      if (!email) { ui.msg.textContent = 'Enter your email'; return; }
+      ui.msg.textContent = 'Sending…'; ui.send.disabled = true;
+      const { error } = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: REDIRECT_URL } });
+      ui.send.disabled = false;
+      ui.msg.textContent = error ? ('Error: ' + error.message) : 'Check your email for the sign‑in link.';
+    });
+
+    (async () => {
+      // After redirect back from email link, exchange ?code= for a session
+      const params = new URLSearchParams(location.search);
+      const code = params.get('code');
+      if (code) {
+        try { await sb.auth.exchangeCodeForSession(code); } catch(e) { console.warn(e); }
+        history.replaceState({}, '', 'admin.html');
+      }
+      const { data: { session } } = await sb.auth.getSession();
+      const email = session?.user?.email || '';
+      const ok = session && ALLOWLIST.some(x => x.toLowerCase() === email.toLowerCase());
+      if (ok) { setView(true, email); ui.debug.textContent = JSON.stringify(session, null, 2); }
+      else if (session) { setView(false); ui.msg.textContent = 'Signed in as ' + email + ' but not authorized.'; }
+      else { setView(false); }
+    })();
+
+    ui.signout.addEventListener('click', async () => {
+      await sb.auth.signOut();
+      setView(false);
+      ui.msg.textContent = 'Signed out.';
+    });
+  </script>
+</body>
+</html>
