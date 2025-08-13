@@ -20,12 +20,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-const announcements = [
-  { id: "a1", text: "Welcome to the 2025 season: Shuffle!" },
-  { id: "a2", text: "Booster Meeting Aug 20, 7:00 PM (GHS Auditorium)" },
-  { id: "a3", text: "Car Wash Fundraiser Aug 30" },
-];
-
 
 const Index = () => {
   const baseUrl = import.meta.env.BASE_URL;
@@ -39,6 +33,22 @@ const Index = () => {
   const [joinEmail, setJoinEmail] = useState("");
   const [joinNotes, setJoinNotes] = useState("");
   const [joinLoading, setJoinLoading] = useState(false);
+
+  const announcements = useMemo(() => {
+    const eventAnnouncements = events.map((e) => {
+      const date = new Date(e.date);
+      const dateStr = date.toLocaleDateString(undefined, {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      });
+      return { id: e.id, text: `${dateStr}: ${e.title}` };
+    });
+    return [
+      { id: "season", text: "Welcome to the 2025 season: Shuffle!" },
+      ...eventAnnouncements,
+    ];
+  }, [events]);
 
   useEffect(() => {
     document.title = "Girard Music & Drama Boosters | Support the Arts";
