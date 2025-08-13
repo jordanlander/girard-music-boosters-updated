@@ -109,7 +109,7 @@ create policy "Manage admin_emails" on public.admin_emails
           </Card>
         ) : (
           <>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-6">
               <Card>
                 <CardContent className="p-6">
                 <h2 className="font-semibold">Events</h2>

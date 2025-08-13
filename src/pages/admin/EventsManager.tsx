@@ -110,7 +110,7 @@ export default function EventsManager() {
         </div>
 
         {/* Create new */}
-        <div className="grid lg:grid-cols-6 gap-2 items-end">
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-end">
           <Input
             placeholder="Title"
             value={draft.title}
@@ -166,7 +166,7 @@ export default function EventsManager() {
         ) : (
           <div className="space-y-3">
             {items.map((row) => (
-              <div key={row.id} className="grid lg:grid-cols-7 gap-2 items-center">
+              <div key={row.id} className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-start">
                 <Input
                   value={row.title}
                   onChange={(e) =>

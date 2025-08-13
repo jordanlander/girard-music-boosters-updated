@@ -104,7 +104,7 @@ export default function DocumentsManager() {
         </div>
 
         {/* Create new */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-2 items-end">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5 items-end">
           <Input
             placeholder="Title"
             value={draft.title}
@@ -151,7 +151,7 @@ export default function DocumentsManager() {
         ) : (
           <div className="space-y-3">
             {items.map((row, idx) => (
-              <div key={row.id} className="grid sm:grid-cols-2 lg:grid-cols-6 gap-2 items-center">
+              <div key={row.id} className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 items-center">
                 <Input
                   value={row.title}
                   onChange={(e) =>

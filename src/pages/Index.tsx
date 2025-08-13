@@ -216,14 +216,7 @@ const Index = () => {
             <p className="text-muted-foreground">Highlights from our students and leaders.</p>
           </div>
           <Gallery
-            images={[
-              { src: "/lovable-uploads/247cf6cb-e08a-4553-8660-470cb8641893.png", alt: "Shuffle 2025 show artwork" },
-              { src: "/lovable-uploads/3f36a754-30e7-43d4-977b-cd32fda71c06.png", alt: "The Sound of the Swarm graphic" },
-              { src: "/lovable-uploads/020ff85b-0621-428d-a126-92df0f98e408.png", alt: "Yellowjacket Marching Band graphic with notes" },
-              { src: "/lovable-uploads/7d40c3c7-41c9-4c63-8bd1-76d79f4d591e.png", alt: "Yellowjacket logo splatter graphic" },
-              { src: "/lovable-uploads/4dd1825b-a51e-4884-9527-cb64042a826c.png", alt: "Yellowjacket circular logo" },
-              ...galleryImages,
-            ]}
+            images={galleryImages}
           />
         </section>
 

@@ -112,7 +112,7 @@ export default function PhotosManager() {
           <p className="text-sm text-muted-foreground">Upload, edit alt text, publish, and order gallery images.</p>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-2 items-end">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5 items-end">
           <input id="photo-file" type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
           <Input placeholder="Alt text (for accessibility/SEO)" value={alt} onChange={(e) => setAlt(e.target.value)} />
           <Input type="number" placeholder="Order" value={orderIndex} onChange={(e) => setOrderIndex(Number(e.target.value))} />
@@ -130,7 +130,7 @@ export default function PhotosManager() {
         ) : (
           <div className="space-y-3">
             {items.map((row) => (
-              <div key={row.id} className="grid lg:grid-cols-6 gap-2 items-center">
+              <div key={row.id} className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 items-center">
                 <div className="flex items-center gap-3">
                   <img src={publicUrl(row.path)} alt={row.alt ?? "Photo"} className="w-16 h-16 object-cover rounded-md border border-border" />
                   <span className="text-xs text-muted-foreground break-all">{row.path}</span>
