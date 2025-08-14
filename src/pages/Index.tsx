@@ -153,7 +153,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border sticky top-0 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-40">
-        <div className="container flex items-center justify-between py-3">
+        <div className="container flex flex-col items-start gap-2 py-3 min-[481px]:flex-row min-[481px]:items-center min-[481px]:justify-between min-[481px]:gap-0">
           <a href="#top" className="flex items-center gap-3">
             <img src={`${baseUrl}lovable-uploads/4dd1825b-a51e-4884-9527-cb64042a826c.png`} alt="Yellowjacket logo" className="h-10 w-10" />
             <span className="font-display text-lg sm:text-xl">Girard Music & Drama Boosters</span>
@@ -163,9 +163,9 @@ const Index = () => {
             <a href="#gallery" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Gallery</a>
             <a href="#leaders" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Leaders</a>
           </nav>
-          <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => setJoinOpen(true)}><Users className="h-4 w-4 mr-2" />Join</Button>
-            <Button onClick={() => setDonateOpen(true)}><Heart className="h-4 w-4 mr-2" />Donate</Button>
+          <div className="flex w-full flex-wrap gap-2 min-[481px]:w-auto">
+            <Button size="lg" variant="secondary" onClick={() => setJoinOpen(true)}><Users className="h-4 w-4 mr-2" />Join</Button>
+            <Button size="lg" onClick={() => setDonateOpen(true)}><Heart className="h-4 w-4 mr-2" />Donate</Button>
           </div>
         </div>
       </header>
