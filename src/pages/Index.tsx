@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import LeaderCard from "@/components/sections/LeaderCard";
-import { Calendar as CalendarIcon, Users, Heart } from "lucide-react";
+import { Calendar as CalendarIcon, Users, Heart, Download } from "lucide-react";
 import EventCard from "@/components/events/EventCard";
 import { CategoryChip } from "@/components/events/CategoryChip";
 import Gallery from "@/components/gallery/Gallery";
@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { normalizeEventDate } from "@/lib/utils";
+import { downloadICSForEvents } from "@/lib/ics";
 
 
 const Index = () => {
@@ -246,13 +247,23 @@ const Index = () => {
                 onClick={() => toggle(cal)}
               />
             ))}
-            <input
-              aria-label="Search events"
-              placeholder="Search events..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              className="ml-auto w-full sm:w-64 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-            />
+            <div className="ml-auto flex flex-wrap items-center gap-2">
+              <input
+                aria-label="Search events"
+                placeholder="Search events..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="w-full sm:w-64 rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+              <Button
+                variant="outline"
+                onClick={() => downloadICSForEvents(filtered)}
+                disabled={filtered.length === 0}
+                aria-label="Download selected events as calendar"
+              >
+                <Download className="h-4 w-4 mr-2" /> Download Calendar
+              </Button>
+            </div>
           </div>
 
           <div className="mt-6 flex flex-col gap-6 md:flex-row">
