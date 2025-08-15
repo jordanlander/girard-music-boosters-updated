@@ -28,6 +28,31 @@ export function eventToICS(e: EventItem) {
   return lines.join("\r\n");
 }
 
+export function eventsToICS(events: EventItem[]) {
+  const dtStamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Girard Music & Drama Boosters//EN",
+    "CALSCALE:GREGORIAN",
+    ...events.flatMap((e) => {
+      const dt = formatDateForICS(e.date);
+      return [
+        "BEGIN:VEVENT",
+        `UID:${e.id}@girard-boosters`,
+        `DTSTAMP:${dtStamp}`,
+        `DTSTART;VALUE=DATE:${dt}`,
+        `SUMMARY:${escapeText(e.title)}`,
+        e.location ? `LOCATION:${escapeText(e.location)}` : undefined,
+        e.description ? `DESCRIPTION:${escapeText(e.description)}` : undefined,
+        "END:VEVENT",
+      ].filter(Boolean) as string[];
+    }),
+    "END:VCALENDAR",
+  ];
+  return lines.join("\r\n");
+}
+
 function escapeText(input: string) {
   // Escape commas, semicolons and backslashes per RFC5545
   return input.replace(/\\/g, "\\\\").replace(/,/g, "\\,").replace(/;/g, "\\;").replace(/\n/g, "\\n");
@@ -41,6 +66,19 @@ export function downloadICSForEvent(e: EventItem) {
   a.href = url;
   const safeTitle = e.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   a.download = `${safeTitle || "event"}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+export function downloadICSForEvents(events: EventItem[]) {
+  const ics = eventsToICS(events);
+  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "girard-events.ics";
   document.body.appendChild(a);
   a.click();
   a.remove();
