@@ -381,9 +381,14 @@ const Index = () => {
             <div>© {new Date().getFullYear()} Girard Music & Drama Boosters</div>
             <div className="mt-2">Community support that makes the arts possible.</div>
           </div>
-          <Button variant="link" size="sm" asChild>
-            <Link to="/admin" aria-label="Admin login">Login</Link>
-          </Button>
+          <div className="flex gap-4">
+            <Button variant="link" size="sm" asChild>
+              <Link to="/privacy-policy" aria-label="Privacy policy">Privacy</Link>
+            </Button>
+            <Button variant="link" size="sm" asChild>
+              <Link to="/admin" aria-label="Admin login">Login</Link>
+            </Button>
+          </div>
         </div>
       </footer>
 
