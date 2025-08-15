@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,8 @@ export default function EventsManager() {
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [draft, setDraft] = useState<Omit<EventRow, "id">>({
     title: "",
     date: new Date().toISOString().slice(0, 10),
@@ -50,6 +52,108 @@ export default function EventsManager() {
   useEffect(() => {
     load();
   }, []);
+
+  const parseCsvLine = (line: string) => {
+    const result: string[] = [];
+    let current = "";
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      if (char === "\"") {
+        if (inQuotes && line[i + 1] === "\"") {
+          current += "\"";
+          i++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === "," && !inQuotes) {
+        result.push(current);
+        current = "";
+      } else {
+        current += char;
+      }
+    }
+    result.push(current);
+    return result;
+  };
+
+  const parseCsv = (text: string) => {
+    const lines = text.trim().split(/\r?\n/).filter((l) => l.trim());
+    if (!lines.length) return [] as Record<string, string>[];
+    const headers = parseCsvLine(lines[0]).map((h) => h.trim().toLowerCase());
+    return lines.slice(1).map((line) => {
+      const values = parseCsvLine(line);
+      const record: Record<string, string> = {};
+      headers.forEach((h, i) => {
+        const raw = values[i] ?? "";
+        record[h] = raw.trim().replace(/^"|"$/g, "").replace(/""/g, '"');
+      });
+      return record;
+    });
+  };
+
+  const formatDate = (input: string) => {
+    const parts = input.split(/[\/\-]/).map((p) => p.trim());
+    if (parts.length !== 3) return "";
+    const [m, d, y] = parts;
+    if (!m || !d || !y) return "";
+    return `${y.padStart(4, "0")}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+  };
+
+  const mapType = (t: string): CalendarType => {
+    const type = t.trim().toLowerCase();
+    switch (type) {
+      case "band":
+        return "Band";
+      case "drama":
+        return "Drama";
+      case "fundraising":
+      case "fundraiser":
+        return "Fundraising";
+      default:
+        return "General";
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImporting(true);
+    try {
+      const text = await file.text();
+      const rows = parseCsv(text);
+      if (!rows.length) {
+        toast.error("CSV is empty");
+        return;
+      }
+      const events = rows
+        .map((r) => ({
+          title: r["title"],
+          date: formatDate(r["date"]),
+          calendar: mapType(r["type of event"] ?? r["type"] ?? r["calendar"] ?? ""),
+          location: r["location"] || null,
+          description: r["description"] || null,
+          published: true,
+        }))
+        .filter((ev) => ev.title && ev.date);
+      if (events.length === 0) {
+        toast.error("No valid rows found");
+        return;
+      }
+      const { error } = await (supabase as any).from("events").insert(events);
+      if (error) {
+        toast.error("Import failed", { description: error.message });
+      } else {
+        toast.success(`Imported ${events.length} events`);
+        load();
+      }
+    } catch (err: any) {
+      toast.error("Import failed", { description: err.message });
+    } finally {
+      setImporting(false);
+      e.target.value = "";
+    }
+  };
 
   const create = async () => {
     if (!draft.title || !draft.date) {
@@ -104,9 +208,23 @@ export default function EventsManager() {
   return (
     <Card>
       <CardContent className="p-4 space-y-4">
-        <div>
-          <h3 className="font-semibold">Manage Events</h3>
-          <p className="text-sm text-muted-foreground">Add, edit, publish, and reorder by date.</p>
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h3 className="font-semibold">Manage Events</h3>
+            <p className="text-sm text-muted-foreground">Add, edit, publish, and reorder by date.</p>
+          </div>
+          <div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <Button variant="outline" onClick={() => fileInputRef.current?.click()} disabled={importing}>
+              {importing ? "Importing…" : "Import CSV"}
+            </Button>
+          </div>
         </div>
 
         {/* Create new */}
