@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Announcement { id: string; text: string }
@@ -9,10 +9,17 @@ interface Props {
 
 export default function AnnouncementsBar({ items }: Props) {
   const [index, setIndex] = useState(0);
-  if (!items?.length) return null;
 
   const prev = () => setIndex((i) => (i - 1 + items.length) % items.length);
   const next = () => setIndex((i) => (i + 1) % items.length);
+
+  useEffect(() => {
+    if (items.length < 2) return;
+    const timer = setInterval(() => setIndex((i) => (i + 1) % items.length), 5000);
+    return () => clearInterval(timer);
+  }, [items.length]);
+
+  if (!items?.length) return null;
 
   return (
     <aside className="w-full border-y border-border bg-accent/30">
@@ -32,7 +39,7 @@ export default function AnnouncementsBar({ items }: Props) {
             {items.map((a) => (
               <li
                 key={a.id}
-                className="w-full shrink-0 text-center whitespace-nowrap"
+                className="w-full shrink-0 text-center line-clamp-2 sm:whitespace-nowrap"
               >
                 {a.text}
               </li>
