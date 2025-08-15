@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { normalizeEventDate } from "@/lib/utils";
 
 
 const Index = () => {
@@ -40,9 +41,9 @@ const Index = () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const eventAnnouncements = events
-      .filter((e) => new Date(e.date) >= today)
+      .filter((e) => normalizeEventDate(e.date) >= today)
       .map((e) => {
-        const date = new Date(e.date);
+        const date = normalizeEventDate(e.date);
         const dateStr = date.toLocaleDateString(undefined, {
           weekday: "short",
           month: "short",
@@ -124,7 +125,7 @@ const Index = () => {
 
   const monthEvents = useMemo(() => {
     return filtered.filter((e) => {
-      const d = new Date(e.date);
+      const d = normalizeEventDate(e.date);
       return (
         d.getFullYear() === calendarMonth.getFullYear() &&
         d.getMonth() === calendarMonth.getMonth()
@@ -258,7 +259,7 @@ const Index = () => {
             <Calendar
               month={calendarMonth}
               onMonthChange={setCalendarMonth}
-              modifiers={{ event: filtered.map((e) => new Date(e.date)) }}
+              modifiers={{ event: filtered.map((e) => normalizeEventDate(e.date)) }}
               modifiersClassNames={{ event: "bg-accent text-accent-foreground" }}
               className="rounded-md border border-border"
             />

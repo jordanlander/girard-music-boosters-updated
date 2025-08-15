@@ -3,13 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Calendar as CalendarIcon, MapPin } from "lucide-react";
 import { downloadICSForEvent } from "@/lib/ics";
 import type { EventItem } from "@/types/events";
+import { normalizeEventDate } from "@/lib/utils";
 
 interface Props {
   event: EventItem;
 }
 
 export default function EventCard({ event }: Props) {
-  const date = new Date(event.date);
+  const date = normalizeEventDate(event.date);
   const dateStr = date.toLocaleDateString(undefined, {
     weekday: "short",
     month: "short",
