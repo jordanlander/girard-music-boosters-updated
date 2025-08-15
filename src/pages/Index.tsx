@@ -11,6 +11,7 @@ import SupportSection from "@/components/sections/SupportSection";
 import DocsSection from "@/components/sections/DocsSection";
 import ContactSection from "@/components/sections/ContactSection";
 import SocialHighlight from "@/components/sections/SocialHighlight";
+import { Calendar } from "@/components/ui/calendar";
 import type { CalendarType, EventItem } from "@/types/events";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,17 +34,22 @@ const Index = () => {
   const [joinEmail, setJoinEmail] = useState("");
   const [joinNotes, setJoinNotes] = useState("");
   const [joinLoading, setJoinLoading] = useState(false);
+  const [calendarMonth, setCalendarMonth] = useState(new Date());
 
   const announcements = useMemo(() => {
-    const eventAnnouncements = events.map((e) => {
-      const date = new Date(e.date);
-      const dateStr = date.toLocaleDateString(undefined, {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const eventAnnouncements = events
+      .filter((e) => new Date(e.date) >= today)
+      .map((e) => {
+        const date = new Date(e.date);
+        const dateStr = date.toLocaleDateString(undefined, {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        });
+        return { id: e.id, text: `${dateStr}: ${e.title}` };
       });
-      return { id: e.id, text: `${dateStr}: ${e.title}` };
-    });
     return [
       { id: "season", text: "Welcome to the 2025 season: Shuffle!" },
       ...eventAnnouncements,
@@ -115,6 +121,16 @@ const Index = () => {
       selected.includes(e.calendar) && e.title.toLowerCase().includes(query.toLowerCase())
     );
   }, [events, selected, query]);
+
+  const monthEvents = useMemo(() => {
+    return filtered.filter((e) => {
+      const d = new Date(e.date);
+      return (
+        d.getFullYear() === calendarMonth.getFullYear() &&
+        d.getMonth() === calendarMonth.getMonth()
+      );
+    });
+  }, [filtered, calendarMonth]);
 
   const toggle = (cal: CalendarType) => {
     setSelected((prev) =>
@@ -238,13 +254,22 @@ const Index = () => {
             />
           </div>
 
-          <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filtered.map((e) => (
-              <EventCard key={e.id} event={e} />
-            ))}
-            {filtered.length === 0 && (
-              <div className="col-span-full text-muted-foreground">No events match your filters.</div>
-            )}
+          <div className="mt-6 flex flex-col gap-6 md:flex-row">
+            <Calendar
+              month={calendarMonth}
+              onMonthChange={setCalendarMonth}
+              modifiers={{ event: filtered.map((e) => new Date(e.date)) }}
+              modifiersClassNames={{ event: "bg-accent text-accent-foreground" }}
+              className="rounded-md border border-border"
+            />
+            <div className="flex-1 space-y-4">
+              {monthEvents.map((e) => (
+                <EventCard key={e.id} event={e} />
+              ))}
+              {monthEvents.length === 0 && (
+                <div className="text-muted-foreground">No events this month.</div>
+              )}
+            </div>
           </div>
 
         </section>
