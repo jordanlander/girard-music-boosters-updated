@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import LeaderCard from "@/components/sections/LeaderCard";
 import { Calendar as CalendarIcon, Users, Heart } from "lucide-react";
 import EventCard from "@/components/events/EventCard";
 import { CategoryChip } from "@/components/events/CategoryChip";
@@ -279,10 +279,7 @@ const Index = () => {
               { name: "Cheyelle Couse", role: "Secretary" },
               { name: "Joe Meka", role: "Social Media" },
             ].map((p) => (
-              <Card key={p.name} className="p-5 animate-fade-in hover-scale">
-                <div className="text-xs uppercase tracking-wide text-muted-foreground">{p.role}</div>
-                <div className="text-lg font-semibold mt-1">{p.name}</div>
-              </Card>
+              <LeaderCard key={p.name} name={p.name} role={p.role} />
             ))}
           </div>
         </section>
