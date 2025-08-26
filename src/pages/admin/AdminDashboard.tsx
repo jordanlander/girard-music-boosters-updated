@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import DocumentsManager from "./DocumentsManager";
 import EventsManager from "./EventsManager";
 import PhotosManager from "./PhotosManager";
+import VideosManager from "./VideosManager";
 const STATIC_WHITELIST = new Set([
   "girardmusicboosters@gmail.com",
   "jordanlander@gmail.com",
@@ -112,10 +113,10 @@ create policy "Manage admin_emails" on public.admin_emails
             <div className="grid gap-6">
               <Card>
                 <CardContent className="p-6">
-                <h2 className="font-semibold">Events</h2>
-                <div className="mt-3">
-                  <EventsManager />
-                </div>
+                  <h2 className="font-semibold">Events</h2>
+                  <div className="mt-3">
+                    <EventsManager />
+                  </div>
                 </CardContent>
               </Card>
               <Card>
@@ -123,6 +124,14 @@ create policy "Manage admin_emails" on public.admin_emails
                   <h2 className="font-semibold">Photos</h2>
                   <div className="mt-3">
                     <PhotosManager />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <h2 className="font-semibold">Videos</h2>
+                  <div className="mt-3">
+                    <VideosManager />
                   </div>
                 </CardContent>
               </Card>

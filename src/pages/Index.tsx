@@ -11,6 +11,7 @@ import SupportSection from "@/components/sections/SupportSection";
 import DocsSection from "@/components/sections/DocsSection";
 import ContactSection from "@/components/sections/ContactSection";
 import SocialHighlight from "@/components/sections/SocialHighlight";
+import VideoShowcase from "@/components/sections/VideoShowcase";
 import { Calendar } from "@/components/ui/calendar";
 import type { CalendarType, EventItem } from "@/types/events";
 import { Link } from "react-router-dom";
@@ -29,6 +30,7 @@ const Index = () => {
   const [selected, setSelected] = useState<CalendarType[]>(["Band", "Drama", "Fundraising", "General"]);
   const [query, setQuery] = useState("");
   const [galleryImages, setGalleryImages] = useState<{ src: string; alt: string }[]>([]);
+  const [videos, setVideos] = useState<{ src: string; title: string }[]>([]);
   const [events, setEvents] = useState<EventItem[]>([]);
   const [joinOpen, setJoinOpen] = useState(false);
   const [donateOpen, setDonateOpen] = useState(false);
@@ -118,6 +120,25 @@ const Index = () => {
     })();
   }, []);
 
+  // Load videos from Supabase storage via videos table
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await (supabase as any)
+        .from("videos")
+        .select("path,title,order_index,published,created_at")
+        .eq("published", true)
+        .order("order_index", { ascending: true })
+        .order("created_at", { ascending: true });
+      if (!error && data) {
+        const mapped = (data as any[]).map((v) => {
+          const { data: pub } = (supabase as any).storage.from("videos").getPublicUrl(v.path);
+          return { src: pub.publicUrl as string, title: v.title || "Band video" };
+        });
+        setVideos(mapped);
+      }
+    })();
+  }, []);
+
   const filtered = useMemo(() => {
     return events.filter((e) =>
       selected.includes(e.calendar) && e.title.toLowerCase().includes(query.toLowerCase())
@@ -178,6 +199,7 @@ const Index = () => {
           </a>
           <nav className="hidden md:flex gap-4">
             <a href="#events" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Events</a>
+            <a href="#videos" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Videos</a>
             <a href="#gallery" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Gallery</a>
             <a href="#leaders" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Leaders</a>
           </nav>
@@ -290,6 +312,8 @@ const Index = () => {
           onVolunteerClick={() => setJoinOpen(true)}
         />
         <DocsSection />
+
+        <VideoShowcase videos={videos} />
 
         {/* Gallery */}
         <section id="gallery" className="container py-12">

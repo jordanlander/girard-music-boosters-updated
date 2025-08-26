@@ -127,6 +127,36 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      },
+      videos: {
+        Row: {
+          created_at: string
+          id: string
+          order_index: number
+          path: string
+          published: boolean
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_index?: number
+          path: string
+          published?: boolean
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_index?: number
+          path?: string
+          published?: boolean
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
     }
     Views: {
