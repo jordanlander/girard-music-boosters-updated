@@ -55,7 +55,11 @@ const Index = () => {
         return { id: e.id, text: `${dateStr}: ${e.title}` };
       });
     return [
-      { id: "season", text: "Welcome to the 2025 season: Shuffle!" },
+      {
+        id: "season",
+        text:
+          "This weekend: Oliver! at Girard High School Auditorium — Fri & Sat 7 p.m., Sun 2 p.m.",
+      },
       ...eventAnnouncements,
     ];
   }, [events]);
@@ -241,10 +245,13 @@ const Index = () => {
           </div>
           <div className="grid gap-6">
             <FeatureCard
-              title="2025 Show: Shuffle"
-              description="Catch the Yellowjacket Marching Band’s 2025 show — a high‑energy mix of hits."
-              image={{ src: `${baseUrl}lovable-uploads/247cf6cb-e08a-4553-8660-470cb8641893.png`, alt: "Shuffle 2025 show artwork" }}
-              cta={{ label: "See Schedule", href: "#events" }}
+              title="Oliver! premieres this weekend"
+              description="Join Girard Dramatics for Rice Avenue Middle School’s production — Friday & Saturday at 7 p.m., Sunday at 2 p.m. Tickets: Students $3, Seniors $4, Adults $5."
+              image={{
+                src: `${baseUrl}lovable-uploads/oliver-musical.svg`,
+                alt: "Oliver! musical poster with show dates and ticket details",
+              }}
+              cta={{ label: "Get show details", href: "#events" }}
             />
             <FeatureCard
               title="The Sound of the Swarm"
