@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
@@ -98,6 +98,51 @@ export type Database = {
         }
         Relationships: []
       }
+      orders: {
+        Row: {
+          created_at: string
+          customer_email: string | null
+          customer_name: string
+          customer_phone: string
+          id: string
+          items: Json
+          notes: string | null
+          order_type: string
+          status: string
+          total_amount: number
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          customer_email?: string | null
+          customer_name: string
+          customer_phone: string
+          id?: string
+          items: Json
+          notes?: string | null
+          order_type?: string
+          status?: string
+          total_amount: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string
+          customer_phone?: string
+          id?: string
+          items?: Json
+          notes?: string | null
+          order_type?: string
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       photos: {
         Row: {
           alt: string | null
@@ -127,34 +172,34 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
-      },
-      videos: {
+      }
+      profiles: {
         Row: {
           created_at: string
+          full_name: string | null
           id: string
-          order_index: number
-          path: string
-          published: boolean
-          title: string | null
+          phone: string | null
+          preferred_address: string | null
           updated_at: string
+          user_id: string
         }
         Insert: {
           created_at?: string
+          full_name?: string | null
           id?: string
-          order_index?: number
-          path: string
-          published?: boolean
-          title?: string | null
+          phone?: string | null
+          preferred_address?: string | null
           updated_at?: string
+          user_id: string
         }
         Update: {
           created_at?: string
+          full_name?: string | null
           id?: string
-          order_index?: number
-          path?: string
-          published?: boolean
-          title?: string | null
+          phone?: string | null
+          preferred_address?: string | null
           updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -163,10 +208,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

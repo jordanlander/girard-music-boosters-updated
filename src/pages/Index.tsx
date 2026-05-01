@@ -58,7 +58,7 @@ const Index = () => {
       {
         id: "season",
         text:
-          "This weekend: Oliver! at Girard High School Auditorium — Fri & Sat 7 p.m., Sun 2 p.m.",
+          "Girard High School presents Disney's Frozen — April 30, May 1 & 2, 2026 at 7 p.m. (GHS Auditorium). Adults $7, Students & Seniors $5.",
       },
       ...eventAnnouncements,
     ];
@@ -245,13 +245,13 @@ const Index = () => {
           </div>
           <div className="grid gap-6">
             <FeatureCard
-              title="Oliver! premieres this weekend"
-              description="Join Girard Dramatics for Rice Avenue Middle School’s production — Friday & Saturday at 7 p.m., Sunday at 2 p.m. Tickets: Students $3, Seniors $4, Adults $5."
+              title="Disney's Frozen — coming April 30, 2026"
+              description="Girard High School presents Disney's Frozen — The Broadway Musical. April 30, May 1 & 2, 2026 at 7 p.m. in the GHS Auditorium. Tickets at the door: Adults $7; Students & Senior Citizens $5."
               image={{
                 src: `${baseUrl}lovable-uploads/oliver-musical.svg`,
-                alt: "Oliver! musical poster with show dates and ticket details",
+                alt: "Frozen musical show announcement",
               }}
-              cta={{ label: "Get show details", href: "#events" }}
+              cta={{ label: "See show dates", href: "#events" }}
             />
             <FeatureCard
               title="The Sound of the Swarm"
