@@ -342,11 +342,11 @@ const Index = () => {
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { name: "Mike Abbey", role: "President" },
-              { name: "Matthew LaFata", role: "Vice President" },
-              { name: "Nancy Bottom", role: "Treasurer" },
+              { name: "Matt LaFata", role: "President" },
+              { name: "Andrea Kraus", role: "Vice President" },
+              { name: "Ashley Leuschen", role: "Treasurer" },
               { name: "Cheyelle Couse", role: "Secretary" },
-              { name: "Joe Meka", role: "Social Media" },
+              { name: "Cassi LaFata", role: "Social Media" },
             ].map((p) => (
               <LeaderCard key={p.name} name={p.name} role={p.role} />
             ))}
