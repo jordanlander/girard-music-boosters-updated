@@ -1,0 +1,4 @@
+INSERT INTO public.events (title, date, calendar, location, description, published) VALUES
+('Disney''s Frozen — The Broadway Musical', '2026-04-30', 'Drama', 'Girard High School Auditorium', 'Girard High School presents Disney''s Frozen — The Broadway Musical at 7 p.m. Tickets at the door: Adults $7; Students & Senior Citizens $5.', true),
+('Disney''s Frozen — The Broadway Musical', '2026-05-01', 'Drama', 'Girard High School Auditorium', 'Girard High School presents Disney''s Frozen — The Broadway Musical at 7 p.m. Tickets at the door: Adults $7; Students & Senior Citizens $5.', true),
+('Disney''s Frozen — The Broadway Musical', '2026-05-02', 'Drama', 'Girard High School Auditorium', 'Girard High School presents Disney''s Frozen — The Broadway Musical at 7 p.m. Tickets at the door: Adults $7; Students & Senior Citizens $5.', true);
