@@ -23,6 +23,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { normalizeEventDate } from "@/lib/utils";
 import { downloadICSForEvents } from "@/lib/ics";
+import frozenPoster from "@/assets/frozen-poster.jpg";
 
 
 const Index = () => {
@@ -248,8 +249,8 @@ const Index = () => {
               title="Disney's Frozen — coming April 30, 2026"
               description="Girard High School presents Disney's Frozen — The Broadway Musical. April 30, May 1 & 2, 2026 at 7 p.m. in the GHS Auditorium. Tickets at the door: Adults $7; Students & Senior Citizens $5."
               image={{
-                src: `${baseUrl}lovable-uploads/oliver-musical.svg`,
-                alt: "Frozen musical show announcement",
+                src: frozenPoster,
+                alt: "Girard High School presents Disney's Frozen — The Broadway Musical, April 30, May 1 & 2, 2026",
               }}
               cta={{ label: "See show dates", href: "#events" }}
             />
