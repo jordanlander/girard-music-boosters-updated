@@ -23,7 +23,6 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { normalizeEventDate } from "@/lib/utils";
 import { downloadICSForEvents } from "@/lib/ics";
-import frozenPoster from "@/assets/frozen-poster.jpg";
 
 
 const Index = () => {
@@ -55,14 +54,7 @@ const Index = () => {
         });
         return { id: e.id, text: `${dateStr}: ${e.title}` };
       });
-    return [
-      {
-        id: "season",
-        text:
-          "Girard High School presents Disney's Frozen — April 30, May 1 & 2, 2026 at 7 p.m. (GHS Auditorium). Adults $7, Students & Seniors $5.",
-      },
-      ...eventAnnouncements,
-    ];
+    return eventAnnouncements;
   }, [events]);
 
   useEffect(() => {
@@ -245,15 +237,6 @@ const Index = () => {
             <p className="text-muted-foreground">This season’s highlights.</p>
           </div>
           <div className="grid gap-6">
-            <FeatureCard
-              title="Disney's Frozen — coming April 30, 2026"
-              description="Girard High School presents Disney's Frozen — The Broadway Musical. April 30, May 1 & 2, 2026 at 7 p.m. in the GHS Auditorium. Tickets at the door: Adults $7; Students & Senior Citizens $5."
-              image={{
-                src: frozenPoster,
-                alt: "Girard High School presents Disney's Frozen — The Broadway Musical, April 30, May 1 & 2, 2026",
-              }}
-              cta={{ label: "See show dates", href: "#events" }}
-            />
             <FeatureCard
               title="The Sound of the Swarm"
               description="Pride, tradition, and community support powering our students."
